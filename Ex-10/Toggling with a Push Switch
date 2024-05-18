@@ -1,0 +1,50 @@
+Problem
+You want to turn something on and off with a push switch so that it
+toggles between on and off each time you press it.
+
+Solution
+
+Record the last state of the button and invert that value each time
+the button is pressed.
+The following example toggles an LED on and off as you press the
+switch.
+To make this recipe, you will need:
+ Breadboard and jumper wires
+ Tactile push switch
+ LED
+ 470Ω resistor
+Figure shows how to connect a tactile push switch and LED, using a
+breadboard and jumper wires.
+In addition to the male-to-female jumper wires connecting the
+Raspberry Pi to the breadboard, you will also need one male-to-male
+jumper wire or solid core wire.
+Open an editor (nano or IDLE) and type in the following code
+switch_on_off.py:
+import RPi.GPIO as GPIO
+import time
+GPIO.setmode(GPIO.BCM)
+switch_pin = 18
+led_pin = 23
+GPIO.setup(switch_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(led_pin, GPIO.OUT)
+led_state = False
+old_input_state = True # pulled-up
+while True:
+new_input_state = GPIO.input(switch_pin)
+if new_input_state == False and old_input_state == True:
+led_state = not led_state
+old_input_state = new_input_state
+GPIO.output(led_pin, led_state)
+
+Discussion
+
+The variable led_state contains the current state of the LED
+(True for on and False for off). Whenever the button is pressed, the
+following line is run:
+led_state = not led_state
+The not command inverts the value of led_state, so if led_state is
+True, it becomes False and vice versa.
+The variable old_input_state is used to remember the button
+position so that a button press is defined as occurring only when the
+input state changes from being True(switch not pressed) to False (switch
+pressed).
